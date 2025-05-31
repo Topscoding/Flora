@@ -1,0 +1,20 @@
+#pragma once
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <vector>
+#include <cmath>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <iomanip>
+#include <unordered_set>
+#include <unordered_map>
+#include <fstream>
+#include <cstdint>
+#include <cstdio>
+#include <complex>
+#include <variant>
+#include <any>
+#include <format>
+using namespace std;
