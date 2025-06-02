@@ -2,12 +2,12 @@
 #include "language.h"
 #include "../include/include.h"
 #include "../include/define.h"
-#define FILE_OPEN_ERROR 0
-#define STDIN_READ_ERROR 1
-#define ARGUMENT_VALUE_ERROR 2
-#define ARGUMENT_TYPE_ERROR 3
-#define VARIABLE_ALREADY_EXISTS 4
-#define VARIABLE_NOT_EXISTS 5
+#define ERROR_FILE_OPEN_ERROR 0
+#define ERROR_STDIN_READ_ERROR 1
+#define ERROR_ARGUMENT_VALUE_ERROR 2
+#define ERROR_ARGUMENT_TYPE_ERROR 3
+#define ERROR_VARIABLE_ALREADY_EXISTS 4
+#define ERROR_VARIABLE_NOT_EXISTS 5
 inline void panic() {
 	cout << "Error! The program went some error." << endl;
 	cout << "If you see this, it means you did something unexceptional." << endl;
@@ -23,7 +23,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 			cout << format("在函数 {} 中第 {} 行第 {} 列: ",  function_name, line, column) << endl;
 		}
 	}
-	if (message == FILE_OPEN_ERROR) {
+	if (message == ERROR_FILE_OPEN_ERROR) {
 		/*
 		 * args[0] file path
 		 * args[1 ~ end] error message
@@ -38,7 +38,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 			cout << format("当尝试打开文件 {} 时发生错误. ", args[0]) << endl;
 			cout << format("错误信息: {}", args[1]) << endl;
 		}
-	} else if (message == STDIN_READ_ERROR) {
+	} else if (message == ERROR_STDIN_READ_ERROR) {
 		/*
 		 * args[0] error message
 		 */
@@ -52,7 +52,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 			cout << "当从标准输入读入时发生错误." << endl;
 			cout << format("错误信息: {}", args[0]) << endl;
 		}
-	} else if (message == ARGUMENT_VALUE_ERROR) {
+	} else if (message == ERROR_ARGUMENT_VALUE_ERROR) {
 		/*
 		 * args[0] function name
 		 * args[1] the argument user gave
@@ -76,7 +76,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 			}
 			cout << args[args.size() - 1] << endl;
 		}
-	} else if (message == ARGUMENT_TYPE_ERROR) {
+	} else if (message == ERROR_ARGUMENT_TYPE_ERROR) {
 		/*
 		 * args[0] function name
 		 * args[1] the argument's type
@@ -103,7 +103,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 			}
 			cout << args[args.size() - 1] << endl;
 		}
-	} else if (message == VARIABLE_ALREADY_EXISTS) {
+	} else if (message == ERROR_VARIABLE_ALREADY_EXISTS) {
 		/*
 		 * args[0] variable name
 		 */
@@ -115,7 +115,7 @@ inline void error(const int &message, const vector <string> &args, const string 
 		} else if (language == "zh-cn") {
 			cout << format("变量 {} 已经存在. ", args[0]) << endl;
 		}
-	} else if (message == VARIABLE_NOT_EXISTS) {
+	} else if (message == ERROR_VARIABLE_NOT_EXISTS) {
 		/*
 		 * args[0] variable name
 		 */

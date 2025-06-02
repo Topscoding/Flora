@@ -18,7 +18,7 @@ public:
 			}
 			return make_pair(content, false);
 		} catch (const exception &e) {
-			error(STDIN_READ_ERROR, {e.what()});
+			error(ERROR_STDIN_READ_ERROR, {e.what()});
 			return make_pair(string(e.what()), true);
 		}
 	}
@@ -28,7 +28,7 @@ public:
 			getline(cin, content);
 			return make_pair(content, false);
 		} catch (const exception &e) {
-			error(STDIN_READ_ERROR, {e.what()});
+			error(ERROR_STDIN_READ_ERROR, {e.what()});
 			return make_pair(string(e.what()), true);
 		}
 	}
@@ -37,7 +37,7 @@ public:
 		// 打开文件
 		ifstream reader(file_path);
 		if (!reader.is_open()) {
-			error(FILE_OPEN_ERROR, {file_path, strerror(errno)});
+			error(ERROR_FILE_OPEN_ERROR, {file_path, strerror(errno)});
 			return make_pair("", true);
 		}
 		string content, line;

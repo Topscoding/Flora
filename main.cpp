@@ -26,7 +26,7 @@ int main(const int argc, const char * argv[]) {
 	if (argc != 1) {
 		return 0;
 	}
-	info(VERSION);
+	info(INFO_VERSION);
 	while (true) {
 		const auto [str_content, err] = reader::get_stdin_line();
 		if (err) {

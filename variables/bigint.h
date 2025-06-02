@@ -81,7 +81,55 @@ class bigint {
 		}
 		return result;
 	}
-
+	static vector <u32> basic_mul(const vector<u32> &a, const vector<u32> &b) {
+		vector<u64> result(a.size() + b.size() - 1, 0);
+		for (usize i = 0; i < a.size(); i ++) {
+			for (usize j = 0; j < b.size(); j ++) {
+				result[i + j] += static_cast<u64>(a[i]) * b[j];
+				result[i + j + 1] += result[i + j] / bigint_digit_limit;
+				result[i + j] %= bigint_digit_limit;
+			}
+		}
+		while (result.size() > 1 && result.back() == 0) {
+			result.pop_back();
+		}
+		vector<u32> ret(result.size(), 0);
+		for (auto i : result) {
+			ret.emplace_back(i);
+		}
+		return ret;
+	}
+	static vector <u32> shift_left(const vector<u32> &x, const u32 bits) {
+		vector<u32> result(bits, 0);
+		for (auto i : x) {
+			result.push_back(i);
+		}
+		return result;
+	}
+	static vector<u32> karatsuba_mul(const vector<u32>& a, const vector<u32>& b) {
+		if (a.size() < 16 || b.size() < 16) {
+			return basic_mul(a, b);
+		}
+		const isize m = static_cast<isize>(min(a.size(), b.size())) / 2;
+		const vector a_low(a.begin(), a.begin() + m);
+		const vector a_high(a.begin() + m, a.end());
+		const vector b_low(b.begin(), b.begin() + m);
+		const vector b_high(b.begin() + m, b.end());
+		const vector<u32> z0 = karatsuba_mul(a_low, b_low);
+		const vector<u32> z2 = karatsuba_mul(a_high, b_high);
+		const vector<u32> a_sum = simple_add(a_low, a_high);
+		const vector<u32> b_sum = simple_add(b_low, b_high);
+		vector<u32> z1 = karatsuba_mul(a_sum, b_sum);
+		z1 = simple_sub(z1, z0);
+		z1 = simple_sub(z1, z2);
+		vector<u32> result = shift_left(z2, 2 * m);
+		result = simple_add(result, shift_left(z1, m));
+		result = simple_add(result, z0);
+		while (result.size() > 1 && result.back() == 0) {
+			result.pop_back();
+		}
+		return result;
+	}
 public:
 	bool operator<(const bigint &other) const {
 		if (is_positive ^ other.is_positive) { // !=
@@ -111,22 +159,15 @@ public:
 		}
 		return false; // ==
 	}
+	[[nodiscard]] bool is_zero() const {
+		if (digits.empty())
+			return true;
+		if (digits.size() == 1 && digits[0] == 0)
+			return true;
+		return false;
+	}
 	bool operator==(const bigint &other) const {
-		const bool is_equals_0 = [this] {
-			if (digits.empty())
-				return true;
-			if (digits.size() == 1 && digits[0] == 0)
-				return true;
-			return false;
-		}();
-		const bool is_other_equals_0 = [&other] {
-			if (other.digits.empty())
-				return true;
-			if (other.digits.size() == 1 && other.digits[0] == 0)
-				return true;
-			return false;
-		}();
-		if (is_equals_0 && is_other_equals_0)
+		if (is_zero() && other.is_zero())
 			return true;
 		return is_positive == other.is_positive && digits == other.digits;
 	}
@@ -198,11 +239,27 @@ public:
 		}
 		return *this + other.abs();
 	}
-	void operator+=(const bigint &other) {
-		*this = *this + other;
+	bigint operator*(const bigint &other) const {
+		if (is_zero() || other.is_zero()) {
+			return {};
+		}
+		bigint result;
+		result.is_positive = !(is_positive ^ other.is_positive);
+		result.digits = digits.size() > 128 && other.digits.size() > 128 ?
+		karatsuba_mul(digits, other.digits) : basic_mul(digits, other.digits);
+		return result;
 	}
-	void operator-=(const bigint &other) {
+	bigint &operator+=(const bigint &other) {
+		*this = *this + other;
+		return *this;
+	}
+	bigint &operator-=(const bigint &other) {
 		*this = *this - other;
+		return *this;
+	}
+	bigint &operator*=(const bigint &other) {
+		*this = *this * other;
+		return *this;
 	}
 	constexpr bigint() {digits = {0};}
 	explicit bigint(string value) {

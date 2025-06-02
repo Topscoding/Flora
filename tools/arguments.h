@@ -4,10 +4,10 @@
 #include "../locales/info.h"
 inline void argument(const string &message) {
 	if (message == "version") {
-		info(VERSION);
+		info(INFO_VERSION);
 	} else if (message == "help") {
-		info(HELP);
+		info(INFO_HELP);
 	} else {
-		error(ARGUMENT_VALUE_ERROR, {".", message, "version", "help"});
+		error(ERROR_ARGUMENT_VALUE_ERROR, {".", message, "version", "help"});
 	}
 }
