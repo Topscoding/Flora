@@ -21,5 +21,6 @@ Flora 是一门解释性语言。目前它还非常简略，无法使用，我�
 # Thanks List / 感谢名单
 
 Yiming Wu / freeHackerJava
+Ruiyuan Liang / ZhimaNB
 
 ...
